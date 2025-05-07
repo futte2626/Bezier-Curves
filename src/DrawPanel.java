@@ -46,7 +46,6 @@ public class DrawPanel extends JPanel implements ActionListener {
 
     @Override
     public void actionPerformed(ActionEvent e) {
-        // TODO Auto-generated method stub
         if(t<1) t = t+0.01f;
         this.repaint();
     }
