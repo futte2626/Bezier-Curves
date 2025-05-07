@@ -42,11 +42,11 @@ public class DrawPanel extends JPanel implements ActionListener {
 
 
         g2d.setColor(Color.BLACK);
-        g2d.drawOval((int)p1.getX(), (int)p1.getY(), (int)10, (int)10);
+        g2d.drawOval((int)p1.getX()-5, (int)p1.getY()-5, (int)10, (int)10);
         g2d.setColor(Color.BLUE);
-        g2d.drawOval((int)p2.getX(), (int)p2.getY(), (int)10, (int)10);
+        g2d.drawOval((int)p2.getX()-5, (int)p2.getY()-5, (int)10, (int)10);
         g2d.setColor(Color.GREEN);
-        g2d.drawOval((int)p3.getX(), (int)p3.getY(), (int)10, (int)10);
+        g2d.drawOval((int)p3.getX()-5, (int)p3.getY()-5, (int)10, (int)10);
 
         if(t<1) t = t+0.01f;
         else {
