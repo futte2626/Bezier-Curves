@@ -5,11 +5,14 @@ import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
+
 
 import javax.swing.JPanel;
 import javax.swing.Timer;
 
-public class DrawPanel extends JPanel implements ActionListener {
+public class DrawPanel extends JPanel implements ActionListener, MouseListener {
     double prevX;
     double prevY;
     float t = 0;
@@ -17,12 +20,14 @@ public class DrawPanel extends JPanel implements ActionListener {
     Point p2 = new Point(300, 200);
     Point p3 = new Point(700, 600);
 
+
     DrawPanel() {
         this.setPreferredSize(new Dimension(800, 800));
         repaint();
         Timer timer = new Timer(1, this);
         timer.setRepeats(true);
         timer.start();
+        addMouseListener(this);
 
     }
 
@@ -36,8 +41,6 @@ public class DrawPanel extends JPanel implements ActionListener {
         g2d.setColor(new Color(255, 0, 0));
         g2d.setStroke(new BasicStroke(5));
         if(prevX != 0 && prevY != 0) g2d.drawLine((int)prevX, (int)prevY, (int)xPos, (int)yPos);
-        double d = Math.sqrt(Math.pow((yPos - prevY), 2) + Math.pow((xPos- prevX), 2));
-        System.out.println(d);
 
 
 
@@ -48,7 +51,7 @@ public class DrawPanel extends JPanel implements ActionListener {
         g2d.setColor(Color.GREEN);
         g2d.drawOval((int)p3.getX()-5, (int)p3.getY()-5, (int)10, (int)10);
 
-        if(t<1) t = t+0.01f;
+        if(t<1) t = t+0.05f;
         else {
             t-=1;
             t+=0.001f;
@@ -58,6 +61,7 @@ public class DrawPanel extends JPanel implements ActionListener {
 
         prevX = xPos;
         prevY = yPos;
+
     }
 
     @Override
@@ -71,5 +75,30 @@ public class DrawPanel extends JPanel implements ActionListener {
 
     public double getYPos() {
         return (Math.pow((1-t), 2)*p1.getY() + 2*(1-t)*t*p2.getY() + Math.pow(t, 2)*p3.getY());
+    }
+
+    @Override
+    public void mouseClicked(MouseEvent e) {
+
+    }
+
+    @Override
+    public void mousePressed(MouseEvent e) {
+        System.out.println(e);
+    }
+
+    @Override
+    public void mouseReleased(MouseEvent e) {
+
+    }
+
+    @Override
+    public void mouseEntered(MouseEvent e) {
+
+    }
+
+    @Override
+    public void mouseExited(MouseEvent e) {
+
     }
 }
