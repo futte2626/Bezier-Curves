@@ -13,15 +13,15 @@ public class DrawPanel extends JPanel implements ActionListener, MouseListener {
     double prevX;
     double prevY;
     double xPos, yPos;
+    int test = 0;
     volatile private boolean mouseDown = false;
+
     Point p0 = new Point(100, 200);
     Point p1 = new Point(300, 200);
     Point p2 = new Point(700, 600);
     Point p3 = new Point(400, 400);
-    Point p4 = new Point(500, 500);
-    Point p5 = new Point(600, 600);
-    Point p6 = new Point(750, 750);
-    Point[] points = {p0, p1, p2, p3, p4, p5, p6};
+
+    Point[] points = {p0, p1, p2, p3};
 
 
     DrawPanel() {
@@ -34,8 +34,15 @@ public class DrawPanel extends JPanel implements ActionListener, MouseListener {
         xPos = 1;
         yPos = 1;
         for(int i = 0 ; i < points.length; i++){
-            System.out.println(binomalCoefficient(points.length-1, i));
+        //    System.out.println(binomalCoefficient(points.length-1, i));
         }
+
+        new PointList().p = p0;
+        new PointList().p = p1;
+        new PointList().p = p2;
+        new PointList().p = p3;
+
+
     }
 
     public void paintComponent(Graphics g) {
@@ -61,7 +68,7 @@ public class DrawPanel extends JPanel implements ActionListener, MouseListener {
             prevX = xPos;
             prevY = yPos;
         }
-        g2d.setColor(Color.BLACK);
+      /*  g2d.setColor(Color.BLACK);
         g2d.drawOval((int) (p0.getX() - 12.5), (int) (p0.getY() - 12.5), (int) 25, (int) 25);
         g2d.setColor(Color.BLUE);
         g2d.drawOval((int) (p1.getX() - 12.5), (int) (p1.getY() - 12.5), (int) 25, (int) 25);
@@ -69,12 +76,19 @@ public class DrawPanel extends JPanel implements ActionListener, MouseListener {
         g2d.drawOval((int) (p2.getX() - 12.5), (int) (p2.getY() - 12.5), (int) 25, (int) 25);
         g2d.setColor(Color.YELLOW);
         g2d.drawOval((int) (p3.getX() - 12.5), (int) (p3.getY() - 12.5), (int) 25, (int) 25);
-        g2d.setColor(Color.BLACK);
-        g2d.drawOval((int) (p4.getX() - 12.5), (int) (p4.getY() - 12.5), (int) 25, (int) 25);
-        g2d.setColor(Color.BLACK);
-        g2d.drawOval((int) (p5.getX() - 12.5), (int) (p5.getY() - 12.5), (int) 25, (int) 25);
-        g2d.setColor(Color.BLACK);
-        g2d.drawOval((int) (p6.getX() - 12.5), (int) (p6.getY() - 12.5), (int) 25, (int) 25);
+ */
+        PointList tempPoint;
+        tempPoint = PointList.getFirstPoint();
+        int listLength = PointList.getFirstPoint().length();
+        int pointNumber = 0;
+        while (tempPoint != null) {
+            g2d.setColor(new Color(5*pointNumber, 5*pointNumber, 5*pointNumber));
+            g2d.drawOval(tempPoint.p.posX - 12, tempPoint.p.posY -12, 25, 25);
+            pointNumber++;
+            tempPoint = tempPoint.getNextPoint();
+        }
+
+
 
 
 
@@ -89,39 +103,78 @@ public class DrawPanel extends JPanel implements ActionListener, MouseListener {
     public double getXPos(double t) {
         //return (Math.pow((1-t), 2)*p1.getX() + 2*(1-t)*t*p2.getX() + Math.pow(t, 2)*p3.getX());
        // return (Math.pow((1-t), 3)*p1.getX() + 3*Math.pow(1-t, 2)*t*p2.getX() + 3*(1-t)*Math.pow(t, 2)*p3.getX() + Math.pow(t, 3)*p4.getX());
-        double x = 0;
+
+        /*double x = 0;
         for (int i = 0; i < points.length; i++) {
             x += binomalCoefficient(points.length-1, i)*Math.pow((1-t), points.length-1-i)*Math.pow(t,i)*(points[i].getX());
         }
+        return x; */
+
+        double x  = 0;
+
+        PointList tempPoint;
+        tempPoint = PointList.getFirstPoint();
+        int listLength = PointList.getFirstPoint().length();
+        int pointNumber = 0;
+        while (tempPoint != null) {
+            x += binomalCoefficient(listLength - 1, pointNumber)*Math.pow((1-t), listLength-1-pointNumber)*Math.pow(t,pointNumber)*(tempPoint.p.getX());
+            pointNumber++;
+            tempPoint = tempPoint.getNextPoint();
+        }
+
+
         return x;
     }
 
     public double getYPos(double t) {
         //return (Math.pow((1-t), 3)*p0.getY() + 3*Math.pow(1-t, 2)*t*p1.getY() + 3*(1-t)*Math.pow(t, 2)*p2.getY() + Math.pow(t, 3)*p3.getY());
-        double y = 0;
+       /* double y = 0;
         for (int i = 0; i < points.length; i++) {
             y += binomalCoefficient(points.length-1, i)*Math.pow((1-t), points.length-1-i)*Math.pow(t,i)*(points[i].getY());
         }
+        return y; */
+        double y  = 0;
+
+        PointList tempPoint;
+        tempPoint = PointList.getFirstPoint();
+        int listLength = PointList.getFirstPoint().length();
+        int pointNumber = 0;
+        while (tempPoint != null) {
+            y += binomalCoefficient(listLength - 1, pointNumber)*Math.pow((1-t), listLength-1-pointNumber)*Math.pow(t,pointNumber)*(tempPoint.p.getY());
+            pointNumber++;
+            tempPoint = tempPoint.getNextPoint();
+        }
+
+
         return y;
     }
 
     @Override
     public void mouseClicked(MouseEvent e) {
-
+        if(e.getButton() == MouseEvent.BUTTON3){
+            new PointList().p = new Point(e.getX(), e.getY());
+            repaint();
+        }
     }
 
     @Override
     public void mousePressed(MouseEvent e) {
+
+
         if (e.getButton() == MouseEvent.BUTTON1) {
             mouseDown = true;
             Point mosPos = new Point(e.getX(), e.getY());
-            if (mosPos.distance(p0) <= 15) initThread(p0);
-            else if (mosPos.distance(p1) <= 15) initThread(p1);
-            else if (mosPos.distance(p2) <= 15) initThread(p2);
-            else if (mosPos.distance(p3) <= 15) initThread(p3);
-            else if (mosPos.distance(p4) <= 15) initThread(p4);
-            else if (mosPos.distance(p5) <= 15) initThread(p5);
-            else if (mosPos.distance(p6) <= 15) initThread(p6);
+
+            PointList tempPoint;
+            tempPoint = PointList.getFirstPoint();
+            int listLength = PointList.getFirstPoint().length();
+            int pointNumber = 0;
+            while (tempPoint != null) {
+                if(mosPos.distance(tempPoint.p) <= 15) initThread(tempPoint.p);
+                pointNumber++;
+                tempPoint = tempPoint.getNextPoint();
+            }
+
 
         }
     }
