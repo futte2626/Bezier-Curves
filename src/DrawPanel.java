@@ -12,6 +12,7 @@ import javax.swing.Timer;
 public class DrawPanel extends JPanel implements ActionListener, MouseListener {
     double prevX;
     double prevY;
+    double xPos, yPos;
     volatile private boolean mouseDown = false;
     Point p1 = new Point(100, 200);
     Point p2 = new Point(300, 200);
@@ -25,6 +26,8 @@ public class DrawPanel extends JPanel implements ActionListener, MouseListener {
         timer.setRepeats(true);
         timer.start();
         addMouseListener(this);
+        xPos = 1;
+        yPos = 1;
 
     }
 
@@ -33,11 +36,12 @@ public class DrawPanel extends JPanel implements ActionListener, MouseListener {
         g2d.setColor(Color.WHITE);
         g2d.fillRect(0, 0, getWidth(), getHeight());
 
+        prevX = getXPos(0);
+        prevY = getYPos(0);
 
-
-        for (double t = 0; t <= 1; t += 0.001) {
-            double xPos = getXPos(t);
-            double yPos = getYPos(t);
+        for (double t = 0; t <= 1; t += 0.0005) {
+            xPos = getXPos(t);
+            yPos = getYPos(t);
 
 
             g2d.setColor(new Color(255, 0, 0));
@@ -85,7 +89,10 @@ public class DrawPanel extends JPanel implements ActionListener, MouseListener {
     public void mousePressed(MouseEvent e) {
         if (e.getButton() == MouseEvent.BUTTON1) {
             mouseDown = true;
-            initThread();
+            Point mosPos = new Point(e.getX(), e.getY());
+            if (mosPos.distance(p1) <= 15) initThread(p1);
+            else if (mosPos.distance(p2) <= 15) initThread(p2);
+            else if (mosPos.distance(p3) <= 15) initThread(p3);
         }
     }
 
@@ -93,6 +100,7 @@ public class DrawPanel extends JPanel implements ActionListener, MouseListener {
     public void mouseReleased(MouseEvent e) {
         if (e.getButton() == MouseEvent.BUTTON1) {
             mouseDown = false;
+            repaint();
         }
     }
 
@@ -112,13 +120,13 @@ public class DrawPanel extends JPanel implements ActionListener, MouseListener {
         isRunning = true;
         return true;
     }
-    private void initThread() {
+    private void initThread(Point p) {
         if (checkAndMark()) {
             new Thread() {
                 public void run() {
                     do {
-                        p1.posX = getMousePosition().x;
-                        p1.posY = getMousePosition().y;
+                        p.posX = getMousePosition().x;
+                        p.posY = getMousePosition().y;
                         repaint();
                     } while (mouseDown);
                     isRunning = false;
