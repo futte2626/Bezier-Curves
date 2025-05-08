@@ -15,7 +15,6 @@ import javax.swing.Timer;
 public class DrawPanel extends JPanel implements ActionListener, MouseListener {
     double prevX;
     double prevY;
-    float t = 0;
     Point p1 = new Point(100, 700);
     Point p2 = new Point(300, 200);
     Point p3 = new Point(700, 600);
@@ -33,48 +32,45 @@ public class DrawPanel extends JPanel implements ActionListener, MouseListener {
 
     public void paintComponent(Graphics g) {
         Graphics2D g2d =  (Graphics2D) g;
-        double xPos = getXPos();
-        double yPos = getYPos();
+
+        for(double t = 0; t <= 1; t += 0.001) {
+            double xPos = getXPos(t);
+            double yPos = getYPos(t);
 
 
-
-        g2d.setColor(new Color(255, 0, 0));
-        g2d.setStroke(new BasicStroke(5));
-        if(prevX != 0 && prevY != 0) g2d.drawLine((int)prevX, (int)prevY, (int)xPos, (int)yPos);
-
+            g2d.setColor(new Color(255, 0, 0));
+            g2d.setStroke(new BasicStroke(3));
+            if (prevX != 0 && prevY != 0) g2d.drawLine((int) prevX, (int) prevY, (int) xPos, (int) yPos);
 
 
-        g2d.setColor(Color.BLACK);
-        g2d.drawOval((int)p1.getX()-5, (int)p1.getY()-5, (int)10, (int)10);
-        g2d.setColor(Color.BLUE);
-        g2d.drawOval((int)p2.getX()-5, (int)p2.getY()-5, (int)10, (int)10);
-        g2d.setColor(Color.GREEN);
-        g2d.drawOval((int)p3.getX()-5, (int)p3.getY()-5, (int)10, (int)10);
+            g2d.setColor(Color.BLACK);
+            g2d.drawOval((int) (p1.getX() - 12.5), (int) (p1.getY() - 12.5), (int) 25, (int) 25);
+            g2d.setColor(Color.BLUE);
+            g2d.drawOval((int) (p2.getX() - 12.5), (int) (p2.getY() - 12.5), (int) 25, (int) 25);
+            g2d.setColor(Color.GREEN);
+            g2d.drawOval((int) (p3.getX() - 12.5), (int) (p3.getY() - 12.5), (int) 25, (int) 25);
 
-        if(t<1) t = t+0.05f;
-        else {
-            t-=1;
-            t+=0.001f;
-            xPos = getXPos();
-            yPos = getYPos();
+            prevX = xPos;
+            prevY = yPos;
+
         }
 
-        prevX = xPos;
-        prevY = yPos;
+
 
     }
 
     @Override
     public void actionPerformed(ActionEvent e) {
-        this.repaint();
+        // this.repaint();
     }
 
-    public double getXPos() {
+    public double getXPos(double t) {
         return (Math.pow((1-t), 2)*p1.getX() + 2*(1-t)*t*p2.getX() + Math.pow(t, 2)*p3.getX());
     }
 
-    public double getYPos() {
+    public double getYPos(double t) {
         return (Math.pow((1-t), 2)*p1.getY() + 2*(1-t)*t*p2.getY() + Math.pow(t, 2)*p3.getY());
+
     }
 
     @Override
@@ -84,7 +80,11 @@ public class DrawPanel extends JPanel implements ActionListener, MouseListener {
 
     @Override
     public void mousePressed(MouseEvent e) {
-        System.out.println(e);
+        Point mosPoint = new Point(getMousePosition().x, getMousePosition().y);
+        int d1 = (int) mosPoint.distance(p1);
+        int d2 = (int) mosPoint.distance(p2);
+        int d3 = (int) mosPoint.distance(p3);
+        System.out.println("d1: " + d1 + "; d2: " + d2 + "; d3: " + d3);
     }
 
     @Override
