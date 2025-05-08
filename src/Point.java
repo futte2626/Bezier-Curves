@@ -1,6 +1,6 @@
 public class Point {
-    private int posX;
-    private int posY;
+    public int posX;
+    public int posY;
 
     Point(int x, int y) {
         posX = x;
