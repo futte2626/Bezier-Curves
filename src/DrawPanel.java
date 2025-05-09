@@ -19,7 +19,7 @@ public class DrawPanel extends JPanel implements ActionListener, MouseListener {
 
 
     DrawPanel() {
-        this.setPreferredSize(new Dimension(800, 800));
+        this.setPreferredSize(new Dimension(1000, 800));
         repaint();
         Timer timer = new Timer(10, this);
         timer.setRepeats(true);
@@ -46,12 +46,12 @@ public class DrawPanel extends JPanel implements ActionListener, MouseListener {
         prevX = getXPos(0);
         prevY = getYPos(0);
 
-        for (double t = 0; t <= 1; t += 0.0001) {
+        for (double t = 0; t <= 1; t += 0.00005) {
             xPos = getXPos(t);
             yPos = getYPos(t);
 
 
-            g2d.setColor(new Color(255, 0, 0));
+            g2d.setColor(new Color(0,0, 0));
             g2d.setStroke(new BasicStroke(3));
             if (prevX != 0 && prevY != 0) {
                 g2d.drawLine((int) prevX, (int) prevY, (int) xPos, (int) yPos);
