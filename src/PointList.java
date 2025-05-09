@@ -1,8 +1,11 @@
+import java.awt.*;
+
 public class PointList {
     private static PointList firstPoint;
     private PointList nextPoint;
 
     public Point p;
+    public Color color;
 
     public PointList() {
         if(firstPoint == null) {
@@ -30,19 +33,30 @@ public class PointList {
         return nextPoint;
     }
 
-    public int pointNumber() {
-        int pointNumber = 0;
-        PointList tempPoint;
-        tempPoint = PointList.getFirstPoint();
-        while (tempPoint != null) {
-            if (tempPoint.nextPoint == this) {
-                break;
+    public void RemovePoint() {
+        //handle special case (if we want to remove firstElement)
+        if(firstPoint == this) firstPoint = this.nextPoint;
+        //handle general case
+        PointList tempElement= firstPoint;
+        while (tempElement != null) {
+            if(tempElement.nextPoint == this) {
+                tempElement.nextPoint = this.nextPoint;
             }
-            pointNumber++;
-            tempPoint = tempPoint.getNextPoint();
+            tempElement = tempElement.nextPoint;
         }
+    }
 
-        return pointNumber;
+    public static void removePoint(Point point) {
+        if(firstPoint != null)
+            if(firstPoint.p.isPointEqual(point)) firstPoint = firstPoint.nextPoint;
+        // handle general case
+        PointList tempElement= firstPoint;
+        while (tempElement != null) { //loops through the list
+            if(tempElement.nextPoint.p.isPointEqual(point)) {
+                tempElement.nextPoint = tempElement.nextPoint.nextPoint;
+            }
+            tempElement = tempElement.nextPoint;
+        }
     }
 
     public int length() {
