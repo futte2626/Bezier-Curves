@@ -5,37 +5,25 @@ import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.event.*;
 import java.util.Random;
-
-
 import javax.swing.JPanel;
-import javax.swing.Timer;
 
-public class DrawPanel extends JPanel implements ActionListener, MouseListener {
+public class DrawPanel extends JPanel implements MouseListener {
     double prevX;
     double prevY;
     double xPos, yPos;
     volatile private boolean mouseDown = false;
 
-
-
     DrawPanel() {
         this.setPreferredSize(new Dimension(1000, 800));
         repaint();
-        Timer timer = new Timer(10, this);
-        timer.setRepeats(true);
-        timer.start();
         addMouseListener(this);
         xPos = 1;
         yPos = 1;
-
 
         addPoint(100, 200);
         addPoint(300, 200);
         addPoint(700, 600);
         addPoint(400, 400);
-
-
-
     }
 
     public void paintComponent(Graphics g) {
@@ -50,26 +38,16 @@ public class DrawPanel extends JPanel implements ActionListener, MouseListener {
             xPos = getXPos(t);
             yPos = getYPos(t);
 
-
             g2d.setColor(new Color(0,0, 0));
             g2d.setStroke(new BasicStroke(3));
             if (prevX != 0 && prevY != 0) {
                 g2d.drawLine((int) prevX, (int) prevY, (int) xPos, (int) yPos);
             }
 
-
             prevX = xPos;
             prevY = yPos;
         }
-      /*  g2d.setColor(Color.BLACK);
-        g2d.drawOval((int) (p0.getX() - 12.5), (int) (p0.getY() - 12.5), (int) 25, (int) 25);
-        g2d.setColor(Color.BLUE);
-        g2d.drawOval((int) (p1.getX() - 12.5), (int) (p1.getY() - 12.5), (int) 25, (int) 25);
-        g2d.setColor(Color.GREEN);
-        g2d.drawOval((int) (p2.getX() - 12.5), (int) (p2.getY() - 12.5), (int) 25, (int) 25);
-        g2d.setColor(Color.YELLOW);
-        g2d.drawOval((int) (p3.getX() - 12.5), (int) (p3.getY() - 12.5), (int) 25, (int) 25);
- */
+
         PointList tempPoint;
         tempPoint = PointList.getFirstPoint();
         while (tempPoint != null) {
@@ -81,29 +59,9 @@ public class DrawPanel extends JPanel implements ActionListener, MouseListener {
             if(tempPoint.getNextPoint() != null) g2d.drawLine(tempPoint.p.posX, tempPoint.p.posY, tempPoint.getNextPoint().p.posX, tempPoint.getNextPoint().p.posY);
             tempPoint = tempPoint.getNextPoint();
         }
-
-
-
-
-
-
-    }
-
-    @Override
-    public void actionPerformed(ActionEvent e) {
-        // this.repaint();
     }
 
     public double getXPos(double t) {
-        //return (Math.pow((1-t), 2)*p1.getX() + 2*(1-t)*t*p2.getX() + Math.pow(t, 2)*p3.getX());
-       // return (Math.pow((1-t), 3)*p1.getX() + 3*Math.pow(1-t, 2)*t*p2.getX() + 3*(1-t)*Math.pow(t, 2)*p3.getX() + Math.pow(t, 3)*p4.getX());
-
-        /*double x = 0;
-        for (int i = 0; i < points.length; i++) {
-            x += binomalCoefficient(points.length-1, i)*Math.pow((1-t), points.length-1-i)*Math.pow(t,i)*(points[i].getX());
-        }
-        return x; */
-
         double x  = 0;
 
         PointList tempPoint;
@@ -116,17 +74,10 @@ public class DrawPanel extends JPanel implements ActionListener, MouseListener {
             tempPoint = tempPoint.getNextPoint();
         }
 
-
         return x;
     }
 
     public double getYPos(double t) {
-        //return (Math.pow((1-t), 3)*p0.getY() + 3*Math.pow(1-t, 2)*t*p1.getY() + 3*(1-t)*Math.pow(t, 2)*p2.getY() + Math.pow(t, 3)*p3.getY());
-       /* double y = 0;
-        for (int i = 0; i < points.length; i++) {
-            y += binomalCoefficient(points.length-1, i)*Math.pow((1-t), points.length-1-i)*Math.pow(t,i)*(points[i].getY());
-        }
-        return y; */
         double y  = 0;
 
         PointList tempPoint;
@@ -138,7 +89,6 @@ public class DrawPanel extends JPanel implements ActionListener, MouseListener {
             pointNumber++;
             tempPoint = tempPoint.getNextPoint();
         }
-
 
         return y;
     }
@@ -164,8 +114,6 @@ public class DrawPanel extends JPanel implements ActionListener, MouseListener {
 
     @Override
     public void mousePressed(MouseEvent e) {
-
-
         if (e.getButton() == MouseEvent.BUTTON1) {
             mouseDown = true;
             Point mosPos = new Point(e.getX(), e.getY());

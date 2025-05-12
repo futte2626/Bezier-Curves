@@ -18,10 +18,4 @@ public class Point {
     public double distance(Point p) {
         return Math.sqrt(Math.pow(p.getX() - posX, 2) + Math.pow(p.getY() - posY, 2));
     }
-
-    public Boolean isPointEqual(Point p) {
-        if (p.posX == posX && p.posY == posY) return true;
-        return false;
-    }
-
 }

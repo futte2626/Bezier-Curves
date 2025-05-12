@@ -46,19 +46,6 @@ public class PointList {
         }
     }
 
-    public static void removePoint(Point point) {
-        if(firstPoint != null)
-            if(firstPoint.p.isPointEqual(point)) firstPoint = firstPoint.nextPoint;
-        // handle general case
-        PointList tempElement= firstPoint;
-        while (tempElement != null) { //loops through the list
-            if(tempElement.nextPoint.p.isPointEqual(point)) {
-                tempElement.nextPoint = tempElement.nextPoint.nextPoint;
-            }
-            tempElement = tempElement.nextPoint;
-        }
-    }
-
     public int length() {
         int length = 0;
         PointList tempPoint;

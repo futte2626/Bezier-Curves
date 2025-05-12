@@ -9,7 +9,5 @@ public class Main {
         mainFrame.add(drawPanel);
         mainFrame.pack();
         mainFrame.setVisible(true);
-
-        }
-
+    }
 }
