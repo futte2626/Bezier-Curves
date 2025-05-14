@@ -34,7 +34,7 @@ public class DeCastljauAlgorithm extends JPanel implements MouseListener {
         prevX = 0;
         prevY = 0;
 
-
+        long startTime = System.nanoTime();
         for (double t = 0; t <= 1; t += 0.001) {
 
             Point nextPoint = deCasteljau(PointArray(),t);
@@ -43,7 +43,7 @@ public class DeCastljauAlgorithm extends JPanel implements MouseListener {
 
 
             g2d.setColor(new Color(0,0, 0));
-            g2d.setStroke(new BasicStroke(1));
+            g2d.setStroke(new BasicStroke(3));
             if (prevX != 0 && prevY != 0) {
                 g2d.drawLine((int) prevX, (int) prevY, (int) xPos, (int) yPos);
             }
@@ -52,16 +52,17 @@ public class DeCastljauAlgorithm extends JPanel implements MouseListener {
             prevX = xPos;
             prevY = yPos;
         }
+        System.out.println((System.nanoTime() - startTime));
 
         PointList tempPoint;
         tempPoint = PointList.getFirstPoint();
         while (tempPoint != null) {
             g2d.setColor(tempPoint.color);
-            g2d.setStroke(new BasicStroke(2));
-            g2d.drawOval(tempPoint.p.posX - 12, tempPoint.p.posY -12, 25, 25);
+            g2d.setStroke(new BasicStroke(4));
+            g2d.drawOval((int)tempPoint.p.posX - 12, (int)tempPoint.p.posY -12, 25, 25);
             g2d.setColor(Color.gray);
             g2d.setStroke(new BasicStroke(1));
-            if(tempPoint.getNextPoint() != null) g2d.drawLine(tempPoint.p.posX, tempPoint.p.posY, tempPoint.getNextPoint().p.posX, tempPoint.getNextPoint().p.posY);
+            if(tempPoint.getNextPoint() != null) g2d.drawLine((int)tempPoint.p.posX, (int)tempPoint.p.posY, (int)tempPoint.getNextPoint().p.posX, (int)tempPoint.getNextPoint().p.posY);
             tempPoint = tempPoint.getNextPoint();
         }
     }
@@ -77,17 +78,18 @@ public class DeCastljauAlgorithm extends JPanel implements MouseListener {
         return points;
     }
 
-    private Point deCasteljau(Point[] points, double t) {
+    public Point deCasteljau(Point[] points, double t) {
         if (points.length == 1) {
             return points[0];  // Base case
         }
 
         Point[] nextLevel = new Point[points.length - 1];
         for (int i = 0; i < nextLevel.length; i++) {
-            int x = (int) Math.round((1 - t) * points[i].getX() + t * points[i + 1].getX());
-            int y = (int) Math.round((1 - t) * points[i].getY() + t * points[i + 1].getY());
+            double x = (1 - t) * points[i].getX() + t * points[i + 1].getX();
+            double y = (1 - t) * points[i].getY() + t * points[i + 1].getY();
             nextLevel[i] = new Point(x, y);
         }
+
 
         return deCasteljau(nextLevel, t); // Recurse
     }

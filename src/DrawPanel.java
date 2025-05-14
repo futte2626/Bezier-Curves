@@ -39,6 +39,7 @@ public class DrawPanel extends JPanel implements MouseListener {
         prevX = getXPos(0);
         prevY = getYPos(0);
 
+        long startTime = System.nanoTime();
         for (double t = 0; t <= 1; t += 0.001) {
             xPos = getXPos(t);
             yPos = getYPos(t);
@@ -54,6 +55,7 @@ public class DrawPanel extends JPanel implements MouseListener {
             prevX = xPos;
             prevY = yPos;
         }
+        System.out.println((System.nanoTime() - startTime));
 
         PointList tempPoint;
         tempPoint = PointList.getFirstPoint();
