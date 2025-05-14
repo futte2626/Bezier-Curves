@@ -5,6 +5,8 @@ import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.event.*;
 import java.util.Random;
+
+
 import javax.swing.JPanel;
 
 public class DrawPanel extends JPanel implements MouseListener {
@@ -13,17 +15,24 @@ public class DrawPanel extends JPanel implements MouseListener {
     double xPos, yPos;
     volatile private boolean mouseDown = false;
 
+
+
     DrawPanel() {
         this.setPreferredSize(new Dimension(1000, 800));
         repaint();
+
         addMouseListener(this);
         xPos = 1;
         yPos = 1;
+
 
         addPoint(100, 200);
         addPoint(300, 200);
         addPoint(700, 600);
         addPoint(400, 400);
+
+
+
     }
 
     public void paintComponent(Graphics g) {
@@ -38,11 +47,13 @@ public class DrawPanel extends JPanel implements MouseListener {
             xPos = getXPos(t);
             yPos = getYPos(t);
 
+
             g2d.setColor(new Color(0,0, 0));
             g2d.setStroke(new BasicStroke(3));
             if (prevX != 0 && prevY != 0) {
                 g2d.drawLine((int) prevX, (int) prevY, (int) xPos, (int) yPos);
             }
+
 
             prevX = xPos;
             prevY = yPos;
@@ -59,6 +70,12 @@ public class DrawPanel extends JPanel implements MouseListener {
             if(tempPoint.getNextPoint() != null) g2d.drawLine(tempPoint.p.posX, tempPoint.p.posY, tempPoint.getNextPoint().p.posX, tempPoint.getNextPoint().p.posY);
             tempPoint = tempPoint.getNextPoint();
         }
+
+
+
+
+
+
     }
 
     public double getXPos(double t) {
@@ -73,6 +90,7 @@ public class DrawPanel extends JPanel implements MouseListener {
             pointNumber++;
             tempPoint = tempPoint.getNextPoint();
         }
+
 
         return x;
     }
@@ -89,6 +107,7 @@ public class DrawPanel extends JPanel implements MouseListener {
             pointNumber++;
             tempPoint = tempPoint.getNextPoint();
         }
+
 
         return y;
     }
@@ -114,6 +133,8 @@ public class DrawPanel extends JPanel implements MouseListener {
 
     @Override
     public void mousePressed(MouseEvent e) {
+
+
         if (e.getButton() == MouseEvent.BUTTON1) {
             mouseDown = true;
             Point mosPos = new Point(e.getX(), e.getY());

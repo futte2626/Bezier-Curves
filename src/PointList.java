@@ -8,7 +8,6 @@ public class PointList {
     public Color color;
 
     public PointList() {
-        // special case: Hvis der ikke er et firstPoint
         if(firstPoint == null) {
             firstPoint = this;
             this.nextPoint = null;
@@ -17,9 +16,7 @@ public class PointList {
             //looper igennem listen
             PointList tempPoint = firstPoint;
             while (tempPoint != null) {
-                //Checker om vi er nået til slutningen
                 if (tempPoint.nextPoint == null) {
-                    // tilføjer punktet i slutningen
                     this.nextPoint = null;
                     tempPoint.nextPoint = this;
                     break;
@@ -38,14 +35,12 @@ public class PointList {
     }
 
     public void RemovePoint() {
-        //special case. Hvis vi vil fjerne det første element
+        //handle special case (if we want to remove firstElement)
         if(firstPoint == this) firstPoint = this.nextPoint;
-        // Looper igennem
+        //handle general case
         PointList tempElement= firstPoint;
         while (tempElement != null) {
-            //Hvis vi har fundet elementet
             if(tempElement.nextPoint == this) {
-                // Fjerner elementet
                 tempElement.nextPoint = this.nextPoint;
             }
             tempElement = tempElement.nextPoint;
