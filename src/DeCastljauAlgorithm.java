@@ -1,21 +1,16 @@
-import java.awt.BasicStroke;
-import java.awt.Color;
-import java.awt.Dimension;
-import java.awt.Graphics;
-import java.awt.Graphics2D;
-import java.awt.event.*;
+import javax.swing.*;
+import java.awt.*;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
 import java.util.Random;
 
-
-import javax.swing.JPanel;
-
-public class DrawPanel extends JPanel implements MouseListener {
+public class DeCastljauAlgorithm extends JPanel implements MouseListener {
     double prevX;
     double prevY;
     double xPos, yPos;
     volatile private boolean mouseDown = false;
 
-    DrawPanel() {
+    DeCastljauAlgorithm() {
         this.setPreferredSize(new Dimension(1000, 800));
         repaint();
 
@@ -36,16 +31,19 @@ public class DrawPanel extends JPanel implements MouseListener {
         g2d.setColor(Color.WHITE);
         g2d.fillRect(0, 0, getWidth(), getHeight());
 
-        prevX = getXPos(0);
-        prevY = getYPos(0);
+        prevX = 0;
+        prevY = 0;
+
 
         for (double t = 0; t <= 1; t += 0.001) {
-            xPos = getXPos(t);
-            yPos = getYPos(t);
+
+            Point nextPoint = deCasteljau(PointArray(),t);
+            xPos = nextPoint.getX();
+            yPos = nextPoint.getY();
 
 
             g2d.setColor(new Color(0,0, 0));
-            g2d.setStroke(new BasicStroke(3));
+            g2d.setStroke(new BasicStroke(1));
             if (prevX != 0 && prevY != 0) {
                 g2d.drawLine((int) prevX, (int) prevY, (int) xPos, (int) yPos);
             }
@@ -59,53 +57,39 @@ public class DrawPanel extends JPanel implements MouseListener {
         tempPoint = PointList.getFirstPoint();
         while (tempPoint != null) {
             g2d.setColor(tempPoint.color);
-            g2d.setStroke(new BasicStroke(3));
-            g2d.drawOval((int)tempPoint.p.posX - 12, (int)tempPoint.p.posY -12, 25, 25);
+            g2d.setStroke(new BasicStroke(2));
+            g2d.drawOval(tempPoint.p.posX - 12, tempPoint.p.posY -12, 25, 25);
             g2d.setColor(Color.gray);
             g2d.setStroke(new BasicStroke(1));
-            if(tempPoint.getNextPoint() != null) g2d.drawLine((int)tempPoint.p.posX,(int) tempPoint.p.posY,(int) tempPoint.getNextPoint().p.posX,(int) tempPoint.getNextPoint().p.posY);
+            if(tempPoint.getNextPoint() != null) g2d.drawLine(tempPoint.p.posX, tempPoint.p.posY, tempPoint.getNextPoint().p.posX, tempPoint.getNextPoint().p.posY);
             tempPoint = tempPoint.getNextPoint();
         }
-
-
-
-
-
-
     }
 
-    public double getXPos(double t) {
-        double x  = 0;
-
-        PointList tempPoint;
-        tempPoint = PointList.getFirstPoint();
-        int listLength = PointList.getFirstPoint().length();
-        int pointNumber = 0;
-        while (tempPoint != null) {
-            x += binomalCoefficient(listLength - 1, pointNumber)*Math.pow((1-t), listLength-1-pointNumber)*Math.pow(t,pointNumber)*(tempPoint.p.getX());
-            pointNumber++;
+    private Point[] PointArray() {
+        PointList tempPoint = PointList.getFirstPoint();
+        int length = tempPoint.length();
+        Point[] points = new Point[length];
+        for (int i = 0; i < length; i++) {
+            points[i] = new Point(tempPoint.p.posX, tempPoint.p.posY);
             tempPoint = tempPoint.getNextPoint();
         }
-
-
-        return x;
+        return points;
     }
 
-    public double getYPos(double t) {
-        double y  = 0;
-
-        PointList tempPoint;
-        tempPoint = PointList.getFirstPoint();
-        int listLength = PointList.getFirstPoint().length();
-        int pointNumber = 0;
-        while (tempPoint != null) {
-            y += binomalCoefficient(listLength - 1, pointNumber)*Math.pow((1-t), listLength-1-pointNumber)*Math.pow(t,pointNumber)*(tempPoint.p.getY());
-            pointNumber++;
-            tempPoint = tempPoint.getNextPoint();
+    private Point deCasteljau(Point[] points, double t) {
+        if (points.length == 1) {
+            return points[0];  // Base case
         }
 
+        Point[] nextLevel = new Point[points.length - 1];
+        for (int i = 0; i < nextLevel.length; i++) {
+            int x = (int) Math.round((1 - t) * points[i].getX() + t * points[i + 1].getX());
+            int y = (int) Math.round((1 - t) * points[i].getY() + t * points[i + 1].getY());
+            nextLevel[i] = new Point(x, y);
+        }
 
-        return y;
+        return deCasteljau(nextLevel, t); // Recurse
     }
 
     @Override
@@ -207,6 +191,4 @@ public class DrawPanel extends JPanel implements MouseListener {
         newPoint.color = new Color(r.nextInt(255), r.nextInt(255), r.nextInt(255));
         repaint();
     }
-
-
 }

@@ -7,11 +7,11 @@ public class Point {
         posY = y;
     }
 
-    int getX() {
+    double getX() {
         return posX;
     }
 
-    int getY() {
+    double getY() {
         return posY;
     }
 
