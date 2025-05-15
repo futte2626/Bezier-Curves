@@ -1,4 +1,4 @@
-Code to make Bézier curves
+Here is my code to make Bézier curves
 
 How to use:
 1. There are 2 diffrent JPanels. Just add the one you wanna use
