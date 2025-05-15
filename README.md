@@ -11,5 +11,5 @@ Controls:
 - Press scroll wheel to delete point mouse is at
 
 Note:
-All code comments are written in Danish
+All code comments are written in Danish but the code itself is in english
 
