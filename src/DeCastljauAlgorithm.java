@@ -79,8 +79,8 @@ public class DeCastljauAlgorithm extends JPanel implements MouseListener {
     }
 
     public Point deCasteljau(Point[] points, double t) {
-        if (points.length == 1) {
-            return points[0];  // Base case
+        if (points.length == 1) { //Slut kriterie
+            return points[0];
         }
 
         Point[] nextLevel = new Point[points.length - 1];
@@ -91,7 +91,7 @@ public class DeCastljauAlgorithm extends JPanel implements MouseListener {
         }
 
 
-        return deCasteljau(nextLevel, t); // Recurse
+        return deCasteljau(nextLevel, t);
     }
 
     @Override
@@ -144,19 +144,6 @@ public class DeCastljauAlgorithm extends JPanel implements MouseListener {
     @Override
     public void mouseExited(MouseEvent e) {
 
-    }
-
-    long binomalCoefficient(int n, int k) {
-        return factorial(n)/(factorial(k)*factorial(n-k));
-    }
-
-    long factorial(int n) {
-        if(n==0) return 1;
-        int res = n;
-        for (int i = n-1; i > 0; i--) {
-            res *= i;
-        }
-        return res;
     }
 
     volatile private boolean isRunning = false;

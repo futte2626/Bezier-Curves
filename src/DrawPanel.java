@@ -24,10 +24,8 @@ public class DrawPanel extends JPanel implements MouseListener {
         yPos = 1;
 
 
-        addPoint(100, 200);
-        addPoint(300, 200);
-        addPoint(700, 600);
-        addPoint(400, 400);
+        addPoint(100, 600);
+        addPoint(600, 400);
 
     }
 
@@ -39,23 +37,19 @@ public class DrawPanel extends JPanel implements MouseListener {
         prevX = getXPos(0);
         prevY = getYPos(0);
 
-        long startTime = System.nanoTime();
         for (double t = 0; t <= 1; t += 0.001) {
             xPos = getXPos(t);
             yPos = getYPos(t);
 
-
-            g2d.setColor(new Color(0,0, 0));
+            g2d.setColor(Color.black);
             g2d.setStroke(new BasicStroke(3));
             if (prevX != 0 && prevY != 0) {
                 g2d.drawLine((int) prevX, (int) prevY, (int) xPos, (int) yPos);
             }
 
-
             prevX = xPos;
             prevY = yPos;
         }
-        System.out.println((System.nanoTime() - startTime));
 
         PointList tempPoint;
         tempPoint = PointList.getFirstPoint();
@@ -84,11 +78,10 @@ public class DrawPanel extends JPanel implements MouseListener {
         int listLength = PointList.getFirstPoint().length();
         int pointNumber = 0;
         while (tempPoint != null) {
-            x += binomalCoefficient(listLength - 1, pointNumber)*Math.pow((1-t), listLength-1-pointNumber)*Math.pow(t,pointNumber)*(tempPoint.p.getX());
+            x += binomalCo(listLength - 1, pointNumber)*Math.pow((1-t), listLength-1-pointNumber)*Math.pow(t,pointNumber)*(tempPoint.p.getX());
             pointNumber++;
             tempPoint = tempPoint.getNextPoint();
         }
-
 
         return x;
     }
@@ -101,7 +94,7 @@ public class DrawPanel extends JPanel implements MouseListener {
         int listLength = PointList.getFirstPoint().length();
         int pointNumber = 0;
         while (tempPoint != null) {
-            y += binomalCoefficient(listLength - 1, pointNumber)*Math.pow((1-t), listLength-1-pointNumber)*Math.pow(t,pointNumber)*(tempPoint.p.getY());
+            y += binomalCo(listLength - 1, pointNumber)*Math.pow((1-t), listLength-1-pointNumber)*Math.pow(t,pointNumber)*(tempPoint.p.getY());
             pointNumber++;
             tempPoint = tempPoint.getNextPoint();
         }
@@ -162,7 +155,7 @@ public class DrawPanel extends JPanel implements MouseListener {
 
     }
 
-    long binomalCoefficient(int n, int k) {
+    long binomalCo(int n, int k) {
         return factorial(n)/(factorial(k)*factorial(n-k));
     }
 
