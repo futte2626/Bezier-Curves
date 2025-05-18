@@ -8,13 +8,18 @@ import java.util.Random;
 
 
 import javax.swing.*;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
 
-public class DrawPanel extends JPanel implements MouseListener, ItemListener {
+public class DrawPanel extends JPanel implements MouseListener, ItemListener, ChangeListener {
     double prevX;
     double prevY;
     double xPos, yPos;
     volatile private boolean mouseDown = false;
     private JToggleButton toggleButton;
+    private JSlider slider;
+    private JLabel label;
+
     private double tMax = 1;
 
     DrawPanel() {
@@ -24,11 +29,17 @@ public class DrawPanel extends JPanel implements MouseListener, ItemListener {
         this.setJToggleButton();
         this.SetAction();
         addMouseListener(this);
-        xPos = 1;
-        yPos = 1;
 
         addPoint(100, 600);
         addPoint(600, 400);
+
+        slider = new JSlider(0, 1000, 1000);
+        slider.setPreferredSize(new Dimension(300, 30));
+        slider.addChangeListener(this);
+        label = new JLabel("t = " + ((double)slider.getValue())/1000);
+
+        this.add(slider);
+        this.add(label);
 
     }
 
@@ -40,8 +51,7 @@ public class DrawPanel extends JPanel implements MouseListener, ItemListener {
         prevX = getXPos(0);
         prevY = getYPos(0);
 
-        System.out.println(toggleButton.isSelected());
-        for (double t = 0; t <= tMax; t += 0.001) {
+        for (double t = 0; t <= ((double)slider.getValue())/1000; t += 0.001) {
             if(toggleButton.isSelected()) {
                 Point p = deCasteljau(PointArray(), t);
                 xPos = p.posX;
@@ -259,5 +269,11 @@ public class DrawPanel extends JPanel implements MouseListener, ItemListener {
             toggleButton.setText("Vektor funktion");
             repaint();
         }
+    }
+
+    @Override
+    public void stateChanged(ChangeEvent e) {
+        label.setText("t = " + ((double)slider.getValue())/1000);
+        repaint();
     }
 }
