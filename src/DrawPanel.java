@@ -10,6 +10,7 @@ import java.util.Random;
 import javax.swing.*;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
+import java.text.NumberFormat;
 
 public class DrawPanel extends JPanel implements MouseListener, ItemListener, ChangeListener {
     double prevX;
@@ -17,12 +18,21 @@ public class DrawPanel extends JPanel implements MouseListener, ItemListener, Ch
     double xPos, yPos;
     volatile private boolean mouseDown = false;
     private JToggleButton toggleButton;
+    Color[] colors = {
+            Color.RED,
+            Color.BLUE,
+            Color.GREEN,
+            Color.ORANGE,
+            Color.MAGENTA,
+            Color.CYAN,
+            Color.PINK,
+            Color.YELLOW,
+    };
     private JSlider slider;
     private JLabel label;
 
-    private double tMax = 1;
-
     DrawPanel() {
+
         this.setPreferredSize(new Dimension(1000, 800));
         repaint();
 
@@ -53,7 +63,7 @@ public class DrawPanel extends JPanel implements MouseListener, ItemListener, Ch
 
         for (double t = 0; t <= ((double)slider.getValue())/1000; t += 0.001) {
             if(toggleButton.isSelected()) {
-                Point p = deCasteljau(PointArray(), t);
+                Point p = deCasteljau(PointArray(), t, null, 0);
                 xPos = p.posX;
                 yPos = p.posY;
             }
@@ -68,9 +78,16 @@ public class DrawPanel extends JPanel implements MouseListener, ItemListener, Ch
             if (prevX != 0 && prevY != 0) {
                 g2d.drawLine((int) prevX, (int) prevY, (int) xPos, (int) yPos);
             }
+//            g2d.fillOval((int) xPos, (int)(100*(yPos-prevY)/(xPos-prevX)+ getHeight()/2), 10, 10);
 
             prevX = xPos;
             prevY = yPos;
+        }
+
+        if (toggleButton.isSelected()) {
+            deCasteljau(PointArray(), ((double)slider.getValue())/1000, g2d, 0);
+            g2d.setColor(Color.black);
+            g2d.fillOval((int) xPos-5, (int) yPos-5, 10, 10);
         }
 
         PointList tempPoint;
@@ -83,6 +100,7 @@ public class DrawPanel extends JPanel implements MouseListener, ItemListener, Ch
             g2d.setStroke(new BasicStroke(1));
             if(tempPoint.getNextPoint() != null) g2d.drawLine((int)tempPoint.p.posX,(int) tempPoint.p.posY,(int) tempPoint.getNextPoint().p.posX,(int) tempPoint.getNextPoint().p.posY);
             tempPoint = tempPoint.getNextPoint();
+ //         g2d.drawLine(0,getHeight()/2, getWidth(), getHeight()/2);
         }
 
 
@@ -103,7 +121,7 @@ public class DrawPanel extends JPanel implements MouseListener, ItemListener, Ch
         return points;
     }
 
-    public Point deCasteljau(Point[] points, double t) {
+    public Point deCasteljau(Point[] points, double t, Graphics2D g, int depth) {
         if (points.length == 1) { //Slut kriterie
             return points[0];
         }
@@ -113,11 +131,19 @@ public class DrawPanel extends JPanel implements MouseListener, ItemListener, Ch
             double x = (1 - t) * points[i].getX() + t * points[i + 1].getX();
             double y = (1 - t) * points[i].getY() + t * points[i + 1].getY();
             nextLevel[i] = new Point(x, y);
+            if(g!=null && depth != 0) {
+                g.setColor(Color.LIGHT_GRAY);
+                g.setColor(colors[depth % colors.length]);
+                g.setStroke(new BasicStroke(2));
+                g.drawLine((int) points[i].getX(), (int) points[i].getY(), (int) points[i + 1].getX(), (int) points[i + 1].getY());
+                g.fillOval((int) points[i].getX()-5, (int) points[i].getY()-5, 10, 10);
+                g.fillOval((int) points[i+1].getX()-5, (int) points[i+1].getY()-5, 10, 10);
+            }
         }
 
-
-        return deCasteljau(nextLevel, t);
+        return deCasteljau(nextLevel, t, g, depth+1);
     }
+
 
 
     public double getXPos(double t) {
@@ -273,7 +299,8 @@ public class DrawPanel extends JPanel implements MouseListener, ItemListener, Ch
 
     @Override
     public void stateChanged(ChangeEvent e) {
-        label.setText("t = " + ((double)slider.getValue())/1000);
+        double tVal = ((double)slider.getValue())/1000;
+        label.setText("t = " + String.format("%.3f", tVal));
         repaint();
     }
 }
