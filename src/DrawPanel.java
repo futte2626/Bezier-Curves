@@ -40,9 +40,33 @@ public class DrawPanel extends JPanel implements MouseListener, ItemListener, Ch
         this.SetAction();
         addMouseListener(this);
 
-        addPoint(100, 600);
+        /* Fire cløver
+        addPoint(400, 400);
         addPoint(600, 400);
+        addPoint(700, 300);
+        addPoint(700, 200);
+        addPoint(600, 300);
+        addPoint(500, 300);
+        addPoint(500, 200);
+        addPoint(600, 100);
+        addPoint(500, 100);
+        addPoint(400, 200);
+        addPoint(400, 400);
+        */
+        addPoint(267, 801);
+        addPoint(320, 267);
+        addPoint(374, 267);
+        addPoint(427, 134);
 
+        addPoint(427, 134);
+        addPoint(481, 801);
+        addPoint(534, 801);
+        addPoint(587, 134);
+
+        addPoint(587, 134);
+        addPoint(641, 267);
+        addPoint(694, 267);
+        addPoint(748, 801);
         slider = new JSlider(0, 1000, 1000);
         slider.setPreferredSize(new Dimension(300, 30));
         slider.addChangeListener(this);
