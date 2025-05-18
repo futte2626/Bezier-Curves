@@ -78,34 +78,30 @@ public class DrawPanel extends JPanel implements MouseListener {
 
     public double getXPos(double t) {
         double x  = 0;
-
         PointList tempPoint;
         tempPoint = PointList.getFirstPoint();
-        int listLength = PointList.getFirstPoint().length();
-        int pointNumber = 0;
+        int n = PointList.getFirstPoint().length()-1;
+        int k = 0;
         while (tempPoint != null) {
-            x += binomalCoefficient(listLength - 1, pointNumber)*Math.pow((1-t), listLength-1-pointNumber)*Math.pow(t,pointNumber)*(tempPoint.p.getX());
-            pointNumber++;
+            x += binomalCo(n, k)*Math.pow((1-t), n-k)*Math.pow(t,k)*(tempPoint.p.posX);
+            k++;
             tempPoint = tempPoint.getNextPoint();
         }
-
 
         return x;
     }
 
     public double getYPos(double t) {
         double y  = 0;
-
         PointList tempPoint;
         tempPoint = PointList.getFirstPoint();
-        int listLength = PointList.getFirstPoint().length();
-        int pointNumber = 0;
+        int n = PointList.getFirstPoint().length()-1;
+        int k = 0;
         while (tempPoint != null) {
-            y += binomalCoefficient(listLength - 1, pointNumber)*Math.pow((1-t), listLength-1-pointNumber)*Math.pow(t,pointNumber)*(tempPoint.p.getY());
-            pointNumber++;
+            y += binomalCo(n, k)*Math.pow((1-t), n-k)*Math.pow(t,k)*(tempPoint.p.posY);
+            k++;
             tempPoint = tempPoint.getNextPoint();
         }
-
 
         return y;
     }
@@ -162,7 +158,7 @@ public class DrawPanel extends JPanel implements MouseListener {
 
     }
 
-    long binomalCoefficient(int n, int k) {
+    long binomalCo(int n, int k) {
         return factorial(n)/(factorial(k)*factorial(n-k));
     }
 
