@@ -24,10 +24,8 @@ public class DrawPanel extends JPanel implements MouseListener {
         yPos = 1;
 
 
-        addPoint(100, 200);
-        addPoint(300, 200);
-        addPoint(700, 600);
-        addPoint(400, 400);
+        addPoint(100, 600);
+        addPoint(600, 400);
 
     }
 
@@ -39,23 +37,19 @@ public class DrawPanel extends JPanel implements MouseListener {
         prevX = getXPos(0);
         prevY = getYPos(0);
 
-        long startTime = System.nanoTime();
         for (double t = 0; t <= 1; t += 0.001) {
             xPos = getXPos(t);
             yPos = getYPos(t);
 
-
-            g2d.setColor(new Color(0,0, 0));
+            g2d.setColor(Color.black);
             g2d.setStroke(new BasicStroke(3));
             if (prevX != 0 && prevY != 0) {
                 g2d.drawLine((int) prevX, (int) prevY, (int) xPos, (int) yPos);
             }
 
-
             prevX = xPos;
             prevY = yPos;
         }
-        System.out.println((System.nanoTime() - startTime));
 
         PointList tempPoint;
         tempPoint = PointList.getFirstPoint();
