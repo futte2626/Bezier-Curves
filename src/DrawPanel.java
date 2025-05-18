@@ -7,22 +7,25 @@ import java.awt.event.*;
 import java.util.Random;
 
 
-import javax.swing.JPanel;
+import javax.swing.*;
 
-public class DrawPanel extends JPanel implements MouseListener {
+public class DrawPanel extends JPanel implements MouseListener, ItemListener {
     double prevX;
     double prevY;
     double xPos, yPos;
     volatile private boolean mouseDown = false;
+    private JToggleButton toggleButton;
+    private double tMax = 1;
 
     DrawPanel() {
         this.setPreferredSize(new Dimension(1000, 800));
         repaint();
 
+        this.setJToggleButton();
+        this.SetAction();
         addMouseListener(this);
         xPos = 1;
         yPos = 1;
-
 
         addPoint(100, 600);
         addPoint(600, 400);
@@ -37,9 +40,18 @@ public class DrawPanel extends JPanel implements MouseListener {
         prevX = getXPos(0);
         prevY = getYPos(0);
 
-        for (double t = 0; t <= 1; t += 0.001) {
-            xPos = getXPos(t);
-            yPos = getYPos(t);
+        System.out.println(toggleButton.isSelected());
+        for (double t = 0; t <= tMax; t += 0.001) {
+            if(toggleButton.isSelected()) {
+                Point p = deCasteljau(PointArray(), t);
+                xPos = p.posX;
+                yPos = p.posY;
+            }
+            else {
+                xPos = getXPos(t);
+                yPos = getYPos(t);
+            }
+
 
             g2d.setColor(Color.black);
             g2d.setStroke(new BasicStroke(3));
@@ -70,6 +82,34 @@ public class DrawPanel extends JPanel implements MouseListener {
 
     }
 
+    private Point[] PointArray() {
+        PointList tempPoint = PointList.getFirstPoint();
+        int length = tempPoint.length();
+        Point[] points = new Point[length];
+        for (int i = 0; i < length; i++) {
+            points[i] = new Point(tempPoint.p.posX, tempPoint.p.posY);
+            tempPoint = tempPoint.getNextPoint();
+        }
+        return points;
+    }
+
+    public Point deCasteljau(Point[] points, double t) {
+        if (points.length == 1) { //Slut kriterie
+            return points[0];
+        }
+
+        Point[] nextLevel = new Point[points.length - 1];
+        for (int i = 0; i < nextLevel.length; i++) {
+            double x = (1 - t) * points[i].getX() + t * points[i + 1].getX();
+            double y = (1 - t) * points[i].getY() + t * points[i + 1].getY();
+            nextLevel[i] = new Point(x, y);
+        }
+
+
+        return deCasteljau(nextLevel, t);
+    }
+
+
     public double getXPos(double t) {
         double x  = 0;
         PointList tempPoint;
@@ -77,7 +117,7 @@ public class DrawPanel extends JPanel implements MouseListener {
         int n = PointList.getFirstPoint().length()-1;
         int k = 0;
         while (tempPoint != null) {
-            x += binomalCo(n, k)*Math.pow((1-t), n-k)*Math.pow(t,k)*(tempPoint.p.posX);
+            x += binomalCo(n, k)*Math.pow((1-t), n-k)*Math.pow(t,k)*tempPoint.p.posX;
             k++;
             tempPoint = tempPoint.getNextPoint();
         }
@@ -92,7 +132,7 @@ public class DrawPanel extends JPanel implements MouseListener {
         int n = PointList.getFirstPoint().length()-1;
         int k = 0;
         while (tempPoint != null) {
-            y += binomalCo(n, k)*Math.pow((1-t), n-k)*Math.pow(t,k)*(tempPoint.p.posY);
+            y += binomalCo(n, k)*Math.pow((1-t), n-k)*Math.pow(t,k)*tempPoint.p.posY;
             k++;
             tempPoint = tempPoint.getNextPoint();
         }
@@ -200,5 +240,24 @@ public class DrawPanel extends JPanel implements MouseListener {
         repaint();
     }
 
+    private void setJToggleButton() {
+        toggleButton = new JToggleButton("Vektor funktion");
+        toggleButton.setBounds(-200,0, 100, 50);
+        this.add(toggleButton);
+    }
+    private void SetAction() {
+        toggleButton.addItemListener(this);
+    }
 
+    @Override
+    public void itemStateChanged(ItemEvent e) {
+        if(toggleButton.isSelected()) {
+            toggleButton.setText("De casteljau's algoritme");
+            repaint();
+        }
+        else {
+            toggleButton.setText("Vektor funktion");
+            repaint();
+        }
+    }
 }
