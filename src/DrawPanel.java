@@ -5,12 +5,9 @@ import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.event.*;
 import java.util.Random;
-
-
 import javax.swing.*;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
-import java.text.NumberFormat;
 
 public class DrawPanel extends JPanel implements MouseListener, ItemListener, ChangeListener {
     double prevX;
@@ -28,6 +25,7 @@ public class DrawPanel extends JPanel implements MouseListener, ItemListener, Ch
             Color.PINK,
             Color.YELLOW,
     };
+    private int pointN = 3;
     private JSlider slider;
     private JLabel label;
 
@@ -53,6 +51,8 @@ public class DrawPanel extends JPanel implements MouseListener, ItemListener, Ch
         addPoint(400, 200);
         addPoint(400, 400);
         */
+
+        /*
         addPoint(267, 801);
         addPoint(320, 267);
         addPoint(374, 267);
@@ -66,11 +66,16 @@ public class DrawPanel extends JPanel implements MouseListener, ItemListener, Ch
         addPoint(587, 134);
         addPoint(641, 267);
         addPoint(694, 267);
-        addPoint(748, 801);
-        slider = new JSlider(0, 1000, 1000);
+        addPoint(748, 801); */
+
+        addPoint(100,100);
+        addPoint(500, 300);
+        addPoint(400,100);
+
+        slider = new JSlider(0, 10000, 10000);
         slider.setPreferredSize(new Dimension(300, 30));
         slider.addChangeListener(this);
-        label = new JLabel("t = " + ((double)slider.getValue())/1000);
+        label = new JLabel("t = " + ((double)slider.getValue())/10000);
 
         this.add(slider);
         this.add(label);
@@ -85,7 +90,7 @@ public class DrawPanel extends JPanel implements MouseListener, ItemListener, Ch
         prevX = getXPos(0);
         prevY = getYPos(0);
 
-        for (double t = 0; t <= ((double)slider.getValue())/1000; t += 0.001) {
+        for (double t = 0; t <= ((double)slider.getValue())/10000; t += 0.0001) {
             if(toggleButton.isSelected()) {
                 Point p = deCasteljau(PointArray(), t, null, 0);
                 xPos = p.posX;
@@ -109,7 +114,7 @@ public class DrawPanel extends JPanel implements MouseListener, ItemListener, Ch
         }
 
         if (toggleButton.isSelected()) {
-            deCasteljau(PointArray(), ((double)slider.getValue())/1000, g2d, 0);
+            deCasteljau(PointArray(), ((double)slider.getValue())/10000, g2d, 0);
             g2d.setColor(Color.black);
             g2d.fillOval((int) xPos-5, (int) yPos-5, 10, 10);
         }
@@ -146,7 +151,7 @@ public class DrawPanel extends JPanel implements MouseListener, ItemListener, Ch
     }
 
     public Point deCasteljau(Point[] points, double t, Graphics2D g, int depth) {
-        if (points.length == 1) { //Slut kriterie
+        if (points.length == 1) {
             return points[0];
         }
 
@@ -279,7 +284,7 @@ public class DrawPanel extends JPanel implements MouseListener, ItemListener, Ch
                         try {
                             p.posX = getMousePosition().x;
                             p.posY = getMousePosition().y;
-                        }catch (Exception e) {
+                        }catch (Exception ignored) {
 
                         }
 
@@ -296,7 +301,9 @@ public class DrawPanel extends JPanel implements MouseListener, ItemListener, Ch
         Random r= new Random();
         newPoint = new PointList();
         newPoint.p = new Point(x, y);
-        newPoint.color = new Color(r.nextInt(255), r.nextInt(255), r.nextInt(255));
+        // newPoint.color = new Color(r.nextInt(255), r.nextInt(255), r.nextInt(255));
+        newPoint.color = colors[pointN % colors.length];
+        pointN++;
         repaint();
     }
 
@@ -323,8 +330,8 @@ public class DrawPanel extends JPanel implements MouseListener, ItemListener, Ch
 
     @Override
     public void stateChanged(ChangeEvent e) {
-        double tVal = ((double)slider.getValue())/1000;
-        label.setText("t = " + String.format("%.3f", tVal));
+        double tVal = ((double)slider.getValue())/10000;
+        label.setText("t = " + String.format("%.5f", tVal) + " " );
         repaint();
     }
 }
