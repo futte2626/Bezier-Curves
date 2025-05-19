@@ -1,7 +1,6 @@
 Here is my code to make Bézier curves
 
 How to use:
-1. There are 2 diffrent JPanels. Just add the one you wanna use
 2. Run Main
 3. Have fun with the curves!
 
