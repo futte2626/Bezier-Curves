@@ -10,9 +10,10 @@ import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
 public class DrawPanel extends JPanel implements MouseListener, ItemListener, ChangeListener {
-    double prevX;
-    double prevY;
-    double xPos, yPos;
+    double prevX, prevXSpeed;
+    double prevY, prevYSpeed;
+    double xPos, yPos, xSpeed, ySpeed,xAcc,yAcc;
+    double arcLength = 0;
     volatile private boolean mouseDown = false;
     private JToggleButton toggleButton;
     Color[] colors = {
@@ -89,6 +90,9 @@ public class DrawPanel extends JPanel implements MouseListener, ItemListener, Ch
 
         prevX = getXPos(0);
         prevY = getYPos(0);
+        prevXSpeed = getXSpeed(0);
+        prevYSpeed = getYSpeed(0);
+        arcLength = 0;
 
         for (double t = 0; t <= ((double)slider.getValue())/10000; t += 0.0001) {
             if(toggleButton.isSelected()) {
@@ -98,7 +102,11 @@ public class DrawPanel extends JPanel implements MouseListener, ItemListener, Ch
             }
             else {
                 xPos = getXPos(t);
+                xSpeed = getXSpeed(t);
+                xAcc = getXAcc(t);
                 yPos = getYPos(t);
+                ySpeed = getYSpeed(t);
+                yAcc = getYAcc(t);
             }
 
 
@@ -106,12 +114,26 @@ public class DrawPanel extends JPanel implements MouseListener, ItemListener, Ch
             g2d.setStroke(new BasicStroke(3));
             if (prevX != 0 && prevY != 0) {
                 g2d.drawLine((int) prevX, (int) prevY, (int) xPos, (int) yPos);
+
             }
 //            g2d.fillOval((int) xPos, (int)(100*(yPos-prevY)/(xPos-prevX)+ getHeight()/2), 10, 10);
+            arcLength += Math.sqrt(Math.pow(xPos - prevX, 2) + Math.pow(yPos - prevY, 2));
 
             prevX = xPos;
+
             prevY = yPos;
+
+
         }
+
+        g2d.setColor(Color.red);
+        g2d.setStroke(new BasicStroke(2));
+        Point spdPoint = new Point((xPos+(xSpeed)/10), (yPos+ySpeed/10));
+        g2d.drawLine((int) xPos, (int) yPos, (int) (xPos+(xSpeed)/10), (int) (yPos+ySpeed/10));
+        g2d.setColor(Color.green);
+        g2d.drawLine((int) spdPoint.posX, (int) spdPoint.posY, (int) (spdPoint.posX+xAcc/10), (int) (spdPoint.posY+yAcc/10));
+
+        System.out.println(arcLength);
 
         if (toggleButton.isSelected()) {
             deCasteljau(PointArray(), ((double)slider.getValue())/10000, g2d, 0);
@@ -190,6 +212,37 @@ public class DrawPanel extends JPanel implements MouseListener, ItemListener, Ch
         return x;
     }
 
+    public double getXSpeed(double t) {
+        double xSpd  = 0;
+        PointList tempPoint;
+        tempPoint = PointList.getFirstPoint();
+        int n = PointList.getFirstPoint().length()-1;
+        int k = 0;
+        while (tempPoint.getNextPoint() != null) {
+            xSpd += binomalCo(n-1, k)*Math.pow((1-t), n-k-1)*Math.pow(t,k)*(tempPoint.getNextPoint().p.posX - tempPoint.p.posX);
+            k++;
+            tempPoint = tempPoint.getNextPoint();
+        }
+
+        return n*xSpd;
+    }
+
+    public double getXAcc(double t) {
+        double xAcc  = 0;
+        PointList tempPoint;
+        tempPoint = PointList.getFirstPoint();
+        int n = PointList.getFirstPoint().length()-1;
+        int k = 0;
+        while (tempPoint.getNextPoint().getNextPoint() != null) {
+            xAcc += binomalCo(n-2, k)*Math.pow((1-t), n-k-2)*Math.pow(t,k)*(tempPoint.getNextPoint().getNextPoint().p.posX - 2*tempPoint.getNextPoint().p.posX+tempPoint.p.posX);
+            k++;
+            tempPoint = tempPoint.getNextPoint();
+        }
+
+        return n*(n-1)*xAcc;
+    }
+
+
     public double getYPos(double t) {
         double y  = 0;
         PointList tempPoint;
@@ -203,6 +256,36 @@ public class DrawPanel extends JPanel implements MouseListener, ItemListener, Ch
         }
 
         return y;
+    }
+
+    public double getYSpeed(double t) {
+        double y  = 0;
+        PointList tempPoint;
+        tempPoint = PointList.getFirstPoint();
+        int n = PointList.getFirstPoint().length()-1;
+        int k = 0;
+        while (tempPoint.getNextPoint() != null) {
+            y += binomalCo(n-1, k)*Math.pow((1-t), n-k-1)*Math.pow(t,k)*(tempPoint.getNextPoint().p.posY - tempPoint.p.posY);
+            k++;
+            tempPoint = tempPoint.getNextPoint();
+        }
+
+        return n*y;
+    }
+
+    public double getYAcc(double t) {
+        double y  = 0;
+        PointList tempPoint;
+        tempPoint = PointList.getFirstPoint();
+        int n = PointList.getFirstPoint().length()-1;
+        int k = 0;
+        while (tempPoint.getNextPoint().getNextPoint() != null) {
+            y += binomalCo(n-2, k)*Math.pow((1-t), n-k-2)*Math.pow(t,k)*(tempPoint.getNextPoint().getNextPoint().p.posY - 2*tempPoint.getNextPoint().p.posY+tempPoint.p.posY);
+            k++;
+            tempPoint = tempPoint.getNextPoint();
+        }
+
+        return n*(n-1)*y;
     }
 
     @Override
@@ -331,7 +414,7 @@ public class DrawPanel extends JPanel implements MouseListener, ItemListener, Ch
     @Override
     public void stateChanged(ChangeEvent e) {
         double tVal = ((double)slider.getValue())/10000;
-        label.setText("t = " + String.format("%.5f", tVal) + " " );
+        label.setText("t = " + String.format("%.5f", tVal) + " v = " + String.format("%.3f", Math.sqrt(Math.pow(xSpeed,2) + Math.pow(ySpeed, 2))) + " a = " + String.format("%.3f", Math.sqrt(Math.pow(xAcc,2) + Math.pow(yAcc, 2))));
         repaint();
     }
 }
