@@ -124,21 +124,24 @@ public class DrawPanel extends JPanel implements MouseListener, ItemListener, Ch
 
         }
 
-        g2d.setColor(Color.red);
-        g2d.setStroke(new BasicStroke(2));
-        Point spdPoint = new Point((xPos+(xSpeed)/10), (yPos+ySpeed/10));
-        g2d.drawLine((int) xPos, (int) yPos, (int) (xPos+(xSpeed)/10), (int) (yPos+ySpeed/10));
-        g2d.setColor(Color.green);
-        g2d.drawLine((int) spdPoint.posX, (int) spdPoint.posY, (int) (spdPoint.posX+xAcc/10), (int) (spdPoint.posY+yAcc/10));
+
 
         System.out.println(arcLength);
 
-        if (toggleButton.isSelected()) {
+      /*  if (toggleButton.isSelected()) {
             deCasteljau(PointArray(), ((double)slider.getValue())/10000, g2d, 0);
             g2d.setColor(Color.black);
             g2d.fillOval((int) xPos-5, (int) yPos-5, 10, 10);
         }
-
+        else{
+            g2d.setColor(Color.red);
+            g2d.setStroke(new BasicStroke(2));
+            Point spdPoint = new Point((xPos+(xSpeed)/10), (yPos+ySpeed/10));
+            g2d.drawLine((int) xPos, (int) yPos, (int) (xPos+(xSpeed)/10), (int) (yPos+ySpeed/10));
+            g2d.setColor(Color.green);
+            g2d.drawLine((int) spdPoint.posX, (int) spdPoint.posY, (int) (spdPoint.posX+xAcc/10), (int) (spdPoint.posY+yAcc/10));
+        }
+        */
         PointList tempPoint;
         tempPoint = PointList.getFirstPoint();
         while (tempPoint != null) {
@@ -379,10 +382,8 @@ public class DrawPanel extends JPanel implements MouseListener, ItemListener, Ch
 
     private void addPoint(int x, int y) {
         PointList newPoint;
-        Random r= new Random();
         newPoint = new PointList();
         newPoint.p = new Point(x, y);
-        // newPoint.color = new Color(r.nextInt(255), r.nextInt(255), r.nextInt(255));
         newPoint.color = colors[pointN % colors.length];
         pointN++;
         repaint();
