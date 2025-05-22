@@ -7,13 +7,9 @@ public class Point {
         posY = y;
     }
 
-    double getX() { return posX; }
-
-    double getY() { return posY; }
-
     public double distance(Point p) {
         //Returnere afstanden i pixel
-        return Math.sqrt(Math.pow(p.getX() - posX, 2) + Math.pow(p.getY() - posY, 2));
+        return Math.sqrt(Math.pow(p.posX - posX, 2) + Math.pow(p.posY - posY, 2));
     }
 }
 

@@ -8,10 +8,12 @@ public class PointList {
     public Color color;
 
     public PointList() {
+        //Special case
         if(firstPoint == null) {
             firstPoint = this;
             this.nextPoint = null;
         }
+        //general case
         else {
             //looper igennem listen
             PointList tempPoint = firstPoint;
@@ -35,9 +37,9 @@ public class PointList {
     }
 
     public void RemovePoint() {
-        //handle special case (if we want to remove firstElement)
+        //special case
         if(firstPoint == this) firstPoint = this.nextPoint;
-        //handle general case
+        // general case
         PointList tempElement= firstPoint;
         while (tempElement != null) {
             if(tempElement.nextPoint == this) {
@@ -47,6 +49,7 @@ public class PointList {
         }
     }
 
+    //Retunere mængden af elementer i listen
     public int length() {
         int length = 0;
         PointList tempPoint;

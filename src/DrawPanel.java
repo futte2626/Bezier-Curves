@@ -10,8 +10,8 @@ import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
 public class DrawPanel extends JPanel implements MouseListener, ItemListener, ChangeListener {
-    double prevX, prevXSpeed;
-    double prevY, prevYSpeed;
+    double prevX;
+    double prevY;
     double xPos, yPos, xSpeed, ySpeed,xAcc,yAcc;
     double arcLength = 0;
     volatile private boolean mouseDown = false;
@@ -90,8 +90,6 @@ public class DrawPanel extends JPanel implements MouseListener, ItemListener, Ch
 
         prevX = getXPos(0);
         prevY = getYPos(0);
-        prevXSpeed = getXSpeed(0);
-        prevYSpeed = getYSpeed(0);
         arcLength = 0;
 
         for (double t = 0; t <= ((double)slider.getValue())/10000; t += 0.0001) {
@@ -179,16 +177,16 @@ public class DrawPanel extends JPanel implements MouseListener, ItemListener, Ch
 
         Point[] nextLevel = new Point[points.length - 1];
         for (int i = 0; i < nextLevel.length; i++) {
-            double x = (1 - t) * points[i].getX() + t * points[i + 1].getX();
-            double y = (1 - t) * points[i].getY() + t * points[i + 1].getY();
+            double x = (1 - t) * points[i].posX + t * points[i + 1].posX;
+            double y = (1 - t) * points[i].posY + t * points[i + 1].posY;
             nextLevel[i] = new Point(x, y);
             if(g!=null && depth != 0) {
                 g.setColor(Color.LIGHT_GRAY);
                 g.setColor(colors[depth % colors.length]);
                 g.setStroke(new BasicStroke(2));
-                g.drawLine((int) points[i].getX(), (int) points[i].getY(), (int) points[i + 1].getX(), (int) points[i + 1].getY());
-                g.fillOval((int) points[i].getX()-5, (int) points[i].getY()-5, 10, 10);
-                g.fillOval((int) points[i+1].getX()-5, (int) points[i+1].getY()-5, 10, 10);
+                g.drawLine((int) points[i].posX, (int) points[i].posY, (int) points[i + 1].posX, (int) points[i + 1].posY);
+                g.fillOval((int) points[i].posX-5, (int) points[i].posY-5, 10, 10);
+                g.fillOval((int) points[i+1].posX-5, (int) points[i+1].posY-5, 10, 10);
             }
         }
 
