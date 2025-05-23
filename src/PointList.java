@@ -36,6 +36,7 @@ public class PointList {
         return nextPoint;
     }
 
+    //fjerner punkt
     public void RemovePoint() {
         //special case
         if(firstPoint == this) firstPoint = this.nextPoint;

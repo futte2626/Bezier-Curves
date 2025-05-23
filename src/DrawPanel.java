@@ -39,35 +39,6 @@ public class DrawPanel extends JPanel implements MouseListener, ItemListener, Ch
         this.SetAction();
         addMouseListener(this);
 
-        /* Fire cløver
-        addPoint(400, 400);
-        addPoint(600, 400);
-        addPoint(700, 300);
-        addPoint(700, 200);
-        addPoint(600, 300);
-        addPoint(500, 300);
-        addPoint(500, 200);
-        addPoint(600, 100);
-        addPoint(500, 100);
-        addPoint(400, 200);
-        addPoint(400, 400);
-        */
-
-        /*
-        addPoint(267, 801);
-        addPoint(320, 267);
-        addPoint(374, 267);
-        addPoint(427, 134);
-
-        addPoint(427, 134);
-        addPoint(481, 801);
-        addPoint(534, 801);
-        addPoint(587, 134);
-
-        addPoint(587, 134);
-        addPoint(641, 267);
-        addPoint(694, 267);
-        addPoint(748, 801); */
 
         addPoint(100,100);
         addPoint(500, 300);
@@ -91,7 +62,7 @@ public class DrawPanel extends JPanel implements MouseListener, ItemListener, Ch
         prevX = getXPos(0);
         prevY = getYPos(0);
         arcLength = 0;
-
+        //looper igennem t værdier for at tegne bezier kurver
         for (double t = 0; t <= ((double)slider.getValue())/10000; t += 0.0001) {
             if(toggleButton.isSelected()) {
                 Point p = deCasteljau(PointArray(), t, null, 0);
@@ -128,11 +99,13 @@ public class DrawPanel extends JPanel implements MouseListener, ItemListener, Ch
 
         System.out.println(arcLength);
 
-      /*  if (toggleButton.isSelected()) {
+        //tegner de casteljaus algoritme
+        if (toggleButton.isSelected()) {
             deCasteljau(PointArray(), ((double)slider.getValue())/10000, g2d, 0);
             g2d.setColor(Color.black);
             g2d.fillOval((int) xPos-5, (int) yPos-5, 10, 10);
         }
+        //tegner hastighed og accelerations vektor
         else{
             g2d.setColor(Color.red);
             g2d.setStroke(new BasicStroke(2));
@@ -141,7 +114,8 @@ public class DrawPanel extends JPanel implements MouseListener, ItemListener, Ch
             g2d.setColor(Color.green);
             g2d.drawLine((int) spdPoint.posX, (int) spdPoint.posY, (int) (spdPoint.posX+xAcc/10), (int) (spdPoint.posY+yAcc/10));
         }
-        */
+
+        //tegner kontrol punkter
         PointList tempPoint;
         tempPoint = PointList.getFirstPoint();
         while (tempPoint != null) {
@@ -161,7 +135,7 @@ public class DrawPanel extends JPanel implements MouseListener, ItemListener, Ch
 
 
     }
-
+    //Liste til array
     private Point[] PointArray() {
         PointList tempPoint = PointList.getFirstPoint();
         int length = tempPoint.length();
@@ -173,6 +147,7 @@ public class DrawPanel extends JPanel implements MouseListener, ItemListener, Ch
         return points;
     }
 
+    //De casteljaus algoritme
     public Point deCasteljau(Point[] points, double t, Graphics2D g, int depth) {
         if (points.length == 1) {
             return points[0];
@@ -183,7 +158,8 @@ public class DrawPanel extends JPanel implements MouseListener, ItemListener, Ch
             double x = (1 - t) * points[i].posX + t * points[i + 1].posX;
             double y = (1 - t) * points[i].posY + t * points[i + 1].posY;
             nextLevel[i] = new Point(x, y);
-            if(g!=null && depth != 0) {
+            //tegner stregerne i algoritmen
+            if(g!=null && depth != 0 && t!=0 && t!= 1) {
                 g.setColor(Color.LIGHT_GRAY);
                 g.setColor(colors[depth % colors.length]);
                 g.setStroke(new BasicStroke(2));
@@ -197,7 +173,7 @@ public class DrawPanel extends JPanel implements MouseListener, ItemListener, Ch
     }
 
 
-
+    //x(t)
     public double getXPos(double t) {
         double x  = 0;
         PointList tempPoint;
@@ -212,7 +188,7 @@ public class DrawPanel extends JPanel implements MouseListener, ItemListener, Ch
 
         return x;
     }
-
+    // x'(t)
     public double getXSpeed(double t) {
         double xSpd  = 0;
         PointList tempPoint;
@@ -227,7 +203,7 @@ public class DrawPanel extends JPanel implements MouseListener, ItemListener, Ch
 
         return n*xSpd;
     }
-
+    //x''(t)
     public double getXAcc(double t) {
         double xAcc  = 0;
         PointList tempPoint;
@@ -243,7 +219,7 @@ public class DrawPanel extends JPanel implements MouseListener, ItemListener, Ch
         return n*(n-1)*xAcc;
     }
 
-
+    //y(t)
     public double getYPos(double t) {
         double y  = 0;
         PointList tempPoint;
@@ -259,6 +235,7 @@ public class DrawPanel extends JPanel implements MouseListener, ItemListener, Ch
         return y;
     }
 
+    //y'(t)
     public double getYSpeed(double t) {
         double y  = 0;
         PointList tempPoint;
@@ -274,6 +251,7 @@ public class DrawPanel extends JPanel implements MouseListener, ItemListener, Ch
         return n*y;
     }
 
+    //y''(t)
     public double getYAcc(double t) {
         double y  = 0;
         PointList tempPoint;
@@ -289,11 +267,14 @@ public class DrawPanel extends JPanel implements MouseListener, ItemListener, Ch
         return n*(n-1)*y;
     }
 
+
     @Override
     public void mouseClicked(MouseEvent e) {
+        //højre klik
         if(e.getButton() == MouseEvent.BUTTON3){
             addPoint(e.getX(), e.getY());
         }
+        // scroll wheel
         else if(e.getButton() == MouseEvent.BUTTON2){
             Point mosPos = new Point(e.getX(), e.getY());
 
@@ -310,6 +291,7 @@ public class DrawPanel extends JPanel implements MouseListener, ItemListener, Ch
 
     @Override
     public void mousePressed(MouseEvent e) {
+        //venstre klik
         if (e.getButton() == MouseEvent.BUTTON1) {
             mouseDown = true;
             Point mosPos = new Point(e.getX(), e.getY());
@@ -341,10 +323,12 @@ public class DrawPanel extends JPanel implements MouseListener, ItemListener, Ch
 
     }
 
+    //binomial koefficienter
     long binomalCo(int n, int k) {
         return factorial(n)/(factorial(k)*factorial(n-k));
     }
 
+    // fakultet funktions for hel tal
     long factorial(int n) {
         if(n==0) return 1;
         int res = n;
@@ -354,6 +338,7 @@ public class DrawPanel extends JPanel implements MouseListener, ItemListener, Ch
         return res;
     }
 
+    //alt dette køre på en anden thread for at man kan flytte punkter samtidig med at kurven tegnes
     volatile private boolean isRunning = false;
     private synchronized boolean checkAndMark() {
         if (isRunning) return false;
@@ -380,6 +365,7 @@ public class DrawPanel extends JPanel implements MouseListener, ItemListener, Ch
         }
     }
 
+    //tilføjer punkt til listen
     private void addPoint(int x, int y) {
         PointList newPoint;
         newPoint = new PointList();
@@ -389,6 +375,7 @@ public class DrawPanel extends JPanel implements MouseListener, ItemListener, Ch
         repaint();
     }
 
+    //toggle button
     private void setJToggleButton() {
         toggleButton = new JToggleButton("Vektor funktion");
         toggleButton.setBounds(-200,0, 100, 50);
@@ -410,10 +397,11 @@ public class DrawPanel extends JPanel implements MouseListener, ItemListener, Ch
         }
     }
 
+    //ændre tekst fæltet
     @Override
     public void stateChanged(ChangeEvent e) {
         double tVal = ((double)slider.getValue())/10000;
-        label.setText("t = " + String.format("%.5f", tVal) + " v = " + String.format("%.3f", Math.sqrt(Math.pow(xSpeed,2) + Math.pow(ySpeed, 2))) + " a = " + String.format("%.3f", Math.sqrt(Math.pow(xAcc,2) + Math.pow(yAcc, 2))));
+        label.setText("t = " + String.format("%.6f", tVal) + " v = " + String.format("%.6f", Math.sqrt(Math.pow(xSpeed,2) + Math.pow(ySpeed, 2))) + " a = " + String.format("%.6f", Math.sqrt(Math.pow(xAcc,2) + Math.pow(yAcc, 2))));
         repaint();
     }
 }
